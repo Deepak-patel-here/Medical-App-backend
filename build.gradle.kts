@@ -34,7 +34,8 @@ dependencies {
 
 
 	//dotenv
-	implementation ("me.paulschwarz:spring-dotenv:4.0.0")
+	implementation ("io.github.cdimascio:dotenv-java:3.0.0")
+
 }
 
 tasks.withType<Test> {
