@@ -31,11 +31,16 @@ public class UserAuthService {
     private JwtService jwtService;
 
     public String registerUser(UserModelMapping userModelMapping){
-        UserModel user=new UserModel(
+        UserModel existingUser = repository.findByEmail(userModelMapping.getEmail());
+        if(existingUser != null) {
+            throw new RuntimeException("User already exists!");
+        }
+
+        UserModel user = new UserModel(
                 UUID.randomUUID().toString(),
                 userModelMapping.getUserName(),
                 userModelMapping.getEmail(),
-                encoder.encode( userModelMapping.getPassword()),
+                encoder.encode(userModelMapping.getPassword()),
                 userModelMapping.getPhoneNumber(),
                 userModelMapping.getPinCode(),
                 userModelMapping.getAddress(),
@@ -43,9 +48,11 @@ public class UserAuthService {
                 false,
                 LocalDate.now()
         );
+
         repository.save(user);
-        return "Registration submitted,waiting for approval";
+        return "Registration submitted, waiting for approval";
     }
+
 
     public List<UserModel> getPendingUser(){
         return repository.findByIsApprovedFalse();
